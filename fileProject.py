@@ -32,12 +32,10 @@ def results():
     print(getResults)
 
 
-input username = "Input your Username: "
-input password = "Input your Password: "
+username = input ("Input your Username: ")
+password = input ("Input your Password: ")
 
 if( login(username, password) == True ):
-    print ()"login successful"()
-    break
+    print ("login successful")
 else:
-    print ()"invalid username/password combo")
-    break
+    print ("invalid username/password combo")
