@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+#^[0-9]+\s[0-9]+\s[0-9]+\s[0-9]+$
 import mysql.connector as mariadb
 import sys
 
@@ -12,12 +12,15 @@ userLogedIn = False
 mariadb_connection = mariadb.connect(user="root", password = "", database="swaProject")
 cursor = mariadb_connection.cursor()
 
-def login(userName, password):
+def createLogin(userName, password):
     cursor.execute("INSERT INTO userLogin(userName, password) values ('"+ userName+ "', '"+ password + "')")
-    return currentUser + userName
+    currentUser + userName
+    return currentUser
+
 
 def logedInUser():
     print(currentUser)
+
 
 def results():
     cursor.execute("select * from userLogin")
@@ -25,7 +28,7 @@ def results():
     print(getResults)
 
 
-
-login(argOne, argTwo)
+def()
+createLogin(argOne, argTwo)
 results()
 logedInUser()
