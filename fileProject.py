@@ -12,7 +12,7 @@ def createLogin(userName, password):
     if(login(userName, password) == False):
         cursor.execute("INSERT INTO userLogin(userName, password) values ('"+ userName+ "', '"+ password + "')")
     else:
-        print "Username and Password combination already exists."
+        print ("Username and Password combination already exists.")
     return
 
 def login(username, password):
@@ -36,8 +36,8 @@ input username = "Input your Username: "
 input password = "Input your Password: "
 
 if( login(username, password) == True ):
-    print "login successful"
+    print ()"login successful"()
     break
 else:
-    print "invalid username/password combo"
+    print ()"invalid username/password combo")
     break
