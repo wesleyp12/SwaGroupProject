@@ -18,6 +18,8 @@ def createLogin(userName, password):
     return currentUser
 
 
+
+
 def logedInUser():
     print(currentUser)
 
@@ -28,7 +30,22 @@ def results():
     print(getResults)
 
 
-def()
+class orders:
+    def __init__(self, userName):
+        self.userName = userName
+
+    def createInventoryTable(self):
+        cursor.execute("Create table inventory (itemId int Primary key, price float not null, userId varchar(20) not null, quantityItems integer)")
+
+
+    def addInventory(self, itemId, price, userId, quantit):
+        self.userName = itemId
+        self.itemId = itemId
+        self.price = price
+        self.userId = userId
+        self.quantityItem = quantityItem
+        cursor.execute("INSERT INTO items ('" + self.itemId + "', '" + self.price + "', '" + self.userId + "','" + self.quantityItem + "') values ()")
+
 createLogin(argOne, argTwo)
 results()
 logedInUser()
