@@ -1,10 +1,6 @@
 #!/usr/bin/python
 #^[0-9]+\s[0-9]+\s[0-9]+\s[0-9]+$
 import mysql.connector as mariadb
-import sys
-
-argOne = sys.argv[1]
-argTwo = sys.argv[2]
 
 currentUser = ""
 userLogedIn = False
@@ -13,10 +9,18 @@ mariadb_connection = mariadb.connect(user="root", password = "", database="swaPr
 cursor = mariadb_connection.cursor()
 
 def createLogin(userName, password):
-    cursor.execute("INSERT INTO userLogin(userName, password) values ('"+ userName+ "', '"+ password + "')")
-    currentUser + userName
-    return currentUser
+    if(login(userName, password) == False):
+        cursor.execute("INSERT INTO userLogin(userName, password) values ('"+ userName+ "', '"+ password + "')")
+    else:
+        print "Username and Password combination already exists."
+    return
 
+def login(username, password):
+    result = cursor.execute("SELECT * FROM userLogin WHERE userName = '" + username + "' AND password = '" + password + "'")
+    if not result:
+        return False
+    else:
+        return True
 
 def logedInUser():
     print(currentUser)
@@ -28,7 +32,12 @@ def results():
     print(getResults)
 
 
-def()
-createLogin(argOne, argTwo)
-results()
-logedInUser()
+input username = "Input your Username: "
+input password = "Input your Password: "
+
+if( login(username, password) == True ):
+    print "login successful"
+    break
+else:
+    print "invalid username/password combo"
+    break
