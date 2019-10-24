@@ -1,6 +1,0 @@
-create database swaProject;
-
-use swaProject;
-
-create table userLogin(userName varchar(20) primary key,
-    -> password varchar(20) not null);

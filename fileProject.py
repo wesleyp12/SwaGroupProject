@@ -1,41 +1,24 @@
 #!/usr/bin/python
 #^[0-9]+\s[0-9]+\s[0-9]+\s[0-9]+$
-import mysql.connector as mariadb
+import databaseFile
 
-currentUser = ""
-userLogedIn = False
+def login():
+    username = input ("Input your Username: ")
+    password = input ("Input your Password: ")
 
-mariadb_connection = mariadb.connect(user="root", password = "", database="swaProject")
-cursor = mariadb_connection.cursor()
+    result = databaseFile.query("SELECT * FROM userLogin WHERE userName = '" + username + "' AND password = '" + password + "';")
+    check = result.fetchone
 
-def createLogin(userName, password):
-    if(login(userName, password) == False):
-        cursor.execute("INSERT INTO userLogin(userName, password) values ('"+ userName+ "', '"+ password + "')")
-    else:
-        print ("Username and Password combination already exists.")
-    return
-
-def login(username, password):
-    result = cursor.execute("SELECT * FROM userLogin WHERE userName = '" + username + "' AND password = '" + password + "'")
-    if not result:
+    if not check:
         return False
     else:
         return True
 
-def logedInUser():
-    print(currentUser)
+databaseFile.createTable()
 
+success = login()
+while(success == False):
+    print("Invalid Username/Password Combo. Please Retry.\n")
+    success = login()
 
-def results():
-    cursor.execute("select * from userLogin")
-    getResults = cursor.fetchall()
-    print(getResults)
-
-
-username = input ("Input your Username: ")
-password = input ("Input your Password: ")
-
-if( login(username, password) == True ):
-    print ("login successful")
-else:
-    print ("invalid username/password combo")
+print("Successful Login\n")
