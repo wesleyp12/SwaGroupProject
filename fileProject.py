@@ -5,9 +5,9 @@ import sqlite3
 conn = sqlite3.connect('SWADatabase.db')
 c = conn.cursor()
 
-c.execute("CREATE TABLE IF NOT EXISTS users([username] VARCHAR PRIMARY KEY, [password] VARCHAR)")
-c.execute("INSERT INTO users([username], [password]) VALUES('admin', 'admin')")
-c.execute("INSERT INTO users([username], [password]) VALUES('username', 'password')")
+c.execute("CREATE TABLE IF NOT EXISTS users([username] VARCHAR PRIMARY KEY, [password] VARCHAR, [address] VARCHAR)")
+c.execute("INSERT INTO users([username], [password], [address]) VALUES('admin', 'admin', '12345 Example Road Starkville, MS 54321')")
+c.execute("INSERT INTO users([username], [password], [address]) VALUES('username', 'password', '98765 Sample Street Starkville, MS 43210')")
 
 c.execute("CREATE TABLE IF NOT EXISTS products([productNum] VARCHAR PRIMARY KEY, [productName] CHAR , [price] VARCHAR, [stock] VARCHAR, [department] VARCHAR)")
 c.execute("INSERT INTO products([productNum], [productName], [price], [stock], [department]) VALUES('1', 'Glad 13G Trash Bags', '16.37', '50', 'Household')")
@@ -23,29 +23,37 @@ c.execute("INSERT INTO products([productNum], [productName], [price], [stock], [
 c.execute("INSERT INTO products([productNum], [productName], [price], [stock], [department]) VALUES('11', '1byone Turntable w/ Speaker', '49.99', '50', 'Electronics')")
 c.execute("INSERT INTO products([productNum], [productName], [price], [stock], [department]) VALUES('12', 'TI-30XS Scientific Calculator', '14.88', '30', 'Electronics')")
 
+c.execute("CREATE TABLE IF NOT EXISTS purchaseHistory([orderNum] VARCHAR, [total] VARCHAR, [card] VARCHAR, [address] VARCHAR, [username] VARCHAR)")
+
 c.close()
 
 conn.row_factory = sqlite3.Row
 c = conn.cursor()
 
 def login():
+    retArray = []
     username = input ("Input your Username: ")
     password = input ("Input your Password: ")
 
-    result = c.execute("SELECT * FROM users WHERE userName = '" + username + "' AND password = '" + password + "';")
+    result = c.execute("SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "';")
     check = result.fetchone()
 
+    retArray.append(check[0])
+
     if not check:
-        return False
+        retArray.append(False)
+        return retArray
     else:
-        return True
+        retArray.append(True)
+        return retArray
 
 success = login()
-while(success == False):
+while(success[1] == False):
     print("Invalid Username/Password Combo. Please Retry.\n")
     success = login()
 
 print("Successful Login\n")
+username = success[0]
 runningTotal = 0
 opt = ""
 num = ""
@@ -53,6 +61,7 @@ option = ""
 container = ['', '', '']
 cart = []
 i = 0
+x = 0
 
 while opt != '4':
     print("Please select an action: (type 1-4)")
@@ -111,14 +120,18 @@ while opt != '4':
                 while cardnum != 'back':
                     print('')
                     cardnum = input('Please input a 10-digit OSC card number (type back to go back): \n')
+
                     if len(cardnum) != 10:
                         print('')
+
                     elif len(cardnum) == 10:
                         if cardnum.isdigit():
                             confirmation = ''
                             print('')
+
                             while confirmation != 'back':
                                 confirmation = input("Please type 'confirm' to confirm your purchase or back to go back: \n")
+
                                 if confirmation == 'back':
                                     cardnum = 'back'
                                     option = 'back'
@@ -130,10 +143,19 @@ while opt != '4':
                                 else:
                                     input('Thank you for your purchase. Hit enter to go back to the home page\n')
                                     confirmation = 'back'
-                                    cardnum = 'back'
                                     option = 'back'
+
+                                    r = c.execute("SELECT address FROM users WHERE username = '" + username + "'")
+                                    rows = r.fetchone()
+
+                                    address = rows[0]
+
+                                    c.execute("INSERT INTO purchaseHistory([orderNum], [total], [card], [address], [username]) VALUES('" + str(x) + "', '" + str(runningTotal) + "', '" + cardnum + "', '" + address + "', '" + username + "')")
+
+                                    cardnum = 'back'
                                     cart = []
                                     runningtotal = 0.0
+                                    x = x + 1
 
             elif option == '2':
                 num = ''
@@ -154,7 +176,15 @@ while opt != '4':
 
 
     if opt == '3':
-        break
+        hist = c.execute("SELECT * FROM purchaseHistory WHERE username = '" + username + "'")
+        histList = hist.fetchall()
+
+        if histList == None:
+            input("No purchase history found. Press enter to return to home.")
+        
+        else:
+            for row in histList:
+                print(row[0] + "     " + row[1] + "     " + row[2] + "     " + row[3] + "     " + row[4])
 
     if opt == '4':
         exit
