@@ -48,7 +48,9 @@ while(success == False):
 print("Successful Login\n")
 runningTotal = 0
 opt = ""
-container = ['', '']
+num = ""
+option = ""
+container = ['', '', '']
 cart = []
 i = 0
 
@@ -64,30 +66,92 @@ while opt != '4':
     if opt == "1":
         result = c.execute("SELECT * FROM products")
         rows = result.fetchall()
-        for row in rows:
-            print(row[0] + '     ' + row[1] + '     ' + row[2] + '     ' + row[3] + '     ' + row[4])
-
         add = ""
+
         while add != 'back':
-            add = input("\nPlease select item to add to cart (Use the number): ")
+
+            for row in rows:
+                print(row[0] + '     ' + row[1] + '     ' + row[2] + '     ' + row[3] + '     ' + row[4])
+
+            add = input("\nPlease select item to add to cart (Use the number)(Type back to go back): ")
             adding = c.execute("SELECT * FROM products WHERE productNum = '" + add +"';")
-            rows = adding.fetchall()
+            res = adding.fetchall()
 
             if add == 'back':
                 break
             elif add != '1' and add != '2' and add != '3' and add != '4' and add != '5' and add != '6' and add != '7' and add != '8' and add != '9' and add != '10' and add != '11' and add != '12':
                 print("Invalid Selection\n")
             else:
-                for row in rows:
-                    container[0] = row[1]
-                    container[1] = row[2]
-                    cart.append(container)
+                for row in res:
+                    container[0] = 0
+                    container[1] = row[1]
+                    container[2] = row[2]
+                    transfer = container.copy()
+                    cart.append(transfer)
+                    runningTotal = runningTotal + float(row[2])
                     i = i + 1
     
     if opt == '2':
-        for j in len(cart):
-            for k in range(0, 2):
-                print(cart[j][k])
+        option = ''
+
+        while option != 'back':
+            for j in range(0, len(cart)):
+                cart[j][0] = j
+                print(cart[j])
+            print('Total Price: ' + str(runningTotal))
+            print('')
+
+            print('Please Select an Action:')
+            print('1. Checkout')
+            print('2. Remove Item')
+            option = input(': ')
+
+            if option == '1':
+                cardnum = ''
+                while cardnum != 'back':
+                    print('')
+                    cardnum = input('Please input a 10-digit OSC card number (type back to go back): \n')
+                    if len(cardnum) != 10:
+                        print('')
+                    elif len(cardnum) == 10:
+                        if cardnum.isdigit():
+                            confirmation = ''
+                            print('')
+                            while confirmation != 'back':
+                                confirmation = input("Please type 'confirm' to confirm your purchase or back to go back: \n")
+                                if confirmation == 'back':
+                                    cardnum = 'back'
+                                    option = 'back'
+                                    break
+
+                                elif confirmation != 'confirm':
+                                    print("")
+
+                                else:
+                                    input('Thank you for your purchase. Hit enter to go back to the home page\n')
+                                    confirmation = 'back'
+                                    cardnum = 'back'
+                                    option = 'back'
+                                    cart = []
+                                    runningtotal = 0.0
+
+            elif option == '2':
+                num = ''
+                while num != 'back':
+                    for j in range(0, len(cart)):
+                        cart[j][0] = j
+                        print(cart[j])
+                    print("")
+                    num = input("Pick the number of the item to remove(type back to go back): ")
+
+                    if num == 'back':
+                        break
+                    elif int(num) not in range(0, len(cart)):
+                        print("Number not in the cart. Please try again.")
+                    elif num != 'back':
+                        runningTotal = runningTotal - float(cart[int(num)][2])
+                        cart.pop(int(num))
+
 
     if opt == '3':
         break
