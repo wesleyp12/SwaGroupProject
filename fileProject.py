@@ -4,7 +4,7 @@ import sqlite3
 
 conn = sqlite3.connect('SWADatabase.db')
 c = conn.cursor()
-
+c.execute("drop table users")
 c.execute("CREATE TABLE IF NOT EXISTS users([username] VARCHAR PRIMARY KEY, [password] VARCHAR, [address] VARCHAR)")
 c.execute("INSERT INTO users([username], [password], [address]) VALUES('admin', 'admin', '12345 Example Road Starkville, MS 54321')")
 c.execute("INSERT INTO users([username], [password], [address]) VALUES('username', 'password', '98765 Sample Street Starkville, MS 43210')")
@@ -99,7 +99,7 @@ while opt != '4':
                     cart.append(transfer)
                     runningTotal = runningTotal + float(row[2])
                     i = i + 1
-    
+
     if opt == '2':
         option = ''
 
@@ -181,11 +181,10 @@ while opt != '4':
 
         if histList == None:
             input("No purchase history found. Press enter to return to home.")
-        
+
         else:
             for row in histList:
                 print(row[0] + "     " + row[1] + "     " + row[2] + "     " + row[3] + "     " + row[4])
 
     if opt == '4':
         exit
-            
